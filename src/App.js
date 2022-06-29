@@ -34,6 +34,7 @@ export default function App() {
   function startGame() {
     setMainMenu(false);
     setCount(0);
+    setQuestions([]);
     setAnswers([]);
     getQuestions();
     setShowAnswers(false);

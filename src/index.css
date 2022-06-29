@@ -24,7 +24,8 @@ body {
 }
 
 .App {
-  width: 550px;
+  width: 700px;
+  min-width: fit-content;
   aspect-ratio: 1;
   background-color: #f5f7fb;
   position: relative;
@@ -84,9 +85,10 @@ body {
 }
 
 .main-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -109,6 +111,10 @@ body {
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
+}
+
+.questions:first-child {
+  padding-top: 0;
 }
 
 .choices-container {
