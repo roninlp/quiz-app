@@ -15,22 +15,20 @@ export default function App() {
     getQuestions();
   }, []);
 
-  function getQuestions() {
-    fetch("https://opentdb.com/api.php?amount=5&type=multiple&encode=url3986")
-      .then((res) => res.json())
-      .then((data) => {
-        setQuestions(() =>
-          data.results.map((item) => ({
-            question: item.question,
-            choices: [...item.incorrect_answers, item.correct_answer].sort(
-              (a, b) => 0.5 - Math.random()
-            ),
-            correct_answer: item.correct_answer,
-            id: nanoid(),
-            selected: "",
-          }))
-        );
-      });
+  async function getQuestions() {
+    const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple&encode=url3986");
+    const data = await res.json();
+    setQuestions(() =>
+      data.results.map((item) => ({
+        question: item.question,
+        choices: [...item.incorrect_answers, item.correct_answer].sort(
+          (a, b) => 0.5 - Math.random()
+        ),
+        correct_answer: item.correct_answer,
+        id: nanoid(),
+        selected: "",
+      }))
+    );
   }
 
   function startGame() {
@@ -52,10 +50,15 @@ export default function App() {
         prevAnswers.map((item) => (item.id === id ? { ...item, answer: answer } : item))
       );
     }
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) => (q.id === id ? { ...q, selected: answer } : q))
+    );
   }
 
   const questionElements = questions.map((question) => {
-    return <Question key={question.id} {...question} onClick={handleClick} />;
+    return (
+      <Question key={question.id} {...question} onClick={handleClick} showAnswers={showAnswers} />
+    );
   });
 
   function checkAnswers() {
@@ -65,11 +68,9 @@ export default function App() {
     }
     answers.forEach((answer) => {
       let correct = questions.find((item) => item.id === answer.id);
-      console.log(correct, answer.answer);
 
       if (correct.correct_answer === answer.answer) {
         setCount((prevCount) => prevCount + 1);
-        console.log("correct");
       }
     });
     setShowAnswers(true);
@@ -86,12 +87,12 @@ export default function App() {
           </button>
         </div>
       ) : (
-        <div>
+        <div className="main-container">
           <div className="questions">{questionElements}</div>
           <div className="result-box">
             {showAnswers && <h3>You scored {count}/5 correct answers</h3>}
             <button className="check-btn btn" onClick={checkAnswers}>
-              {!showAnswers ? "Check answers" : "PlayAgain"}
+              {!showAnswers ? "Check answers" : "Play Again"}
             </button>
           </div>
         </div>
